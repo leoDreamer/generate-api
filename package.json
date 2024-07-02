@@ -1,0 +1,56 @@
+{
+  "name": "generate-swagger-api",
+  "version": "0.0.1",
+  "description": "Open API toolkits for JS",
+  "private": false,
+  "main": "lib/index.js",
+  "types": "index.d.ts",
+  "files": [
+    "lib",
+    "index.d.ts",
+    "templates",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:leoDreamer/generate-api.git"
+  },
+  "keywords": [],
+  "author": "leoDreamer <leoDreamer@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "postinstall": "husky",
+    "lint": "eslint . --ext=.ts,.tsx,.js,.jsx --fix",
+    "prebuild": "tsc --build --clean",
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "openapi": "^1.0.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.4",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-typescript": "^7.23.0",
+    "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.17.5",
+    "@types/node": "^18.0.2",
+    "@opd/eslint-config": "^2.0.2",
+    "@opd/prettier-config": "^2.0.0",
+    "husky": "^9.0.6",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "prettier": "@opd/prettier-config",
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix"
+    ],
+    "*.{json,md}": [
+      "prettier -c --write"
+    ]
+  }
+}
