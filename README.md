@@ -3,14 +3,15 @@
 ## 使用
 
 ```js
+// scripts/gen-api.mjs
 import generateApi from 'generate-swagger-api'
 import path from 'path'
 
-generateApi({
+generateApi.default({
   // swagger json文件路径（可以是http(s)://xxx）
-  url: path.resolve(__dirname, './mocks/v2.json'),
+  url: path.resolve(process.cwd(), './mocks/v2.json'),
   // 输出api js文件路径
-  outPut: path.resolve(__dirname, './apis.js'),
+  outPut: path.resolve(process.cwd(), './apis.js'),
   // 基础service路径，用作string写入模板
   servicePath: '@/utils/services',
 })

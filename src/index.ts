@@ -1,9 +1,10 @@
-import { writeFileSync } from 'fs'
-import { TemplateRequestCodeParams, openapiGenerate } from 'openapi'
-import { tmpImportFn, tmpRequestDocFn, tmpRequestFn } from './templates'
-import resolveRequest from './resolve-request'
+import { appendFileSync } from 'fs'
+import { resolvePath } from './resolve'
+import SwaggerParse from '@readme/openapi-parser'
+import { isEmpty } from 'lodash'
+import { initOutPutFile } from './utils'
 
-export interface Config {
+export interface GenerateApiConfig {
   /**
    * The URL of the server to connect to.
    */
@@ -25,18 +26,17 @@ export interface Config {
    */
   generateResponseDoc?: boolean
 }
-async function GenerateApi(config: Config) {
-  const { code } = await openapiGenerate({
-    file: config.url,
-    templateCodeBefore: () => tmpImportFn(config.servicePath),
-    templateRequestCode: (base: TemplateRequestCodeParams, extra: any) => {
-      const { parameters, description, summary } = extra.requestSwaggerData
-      const requestParams = resolveRequest(parameters)
-      const docs = tmpRequestDocFn(summary || description, requestParams)
-      return tmpRequestFn(base, docs, requestParams.path, requestParams.query, requestParams.body)
-    },
-  } as any)
-  writeFileSync(config.outPut, code)
+
+async function generateApi(config: GenerateApiConfig) {
+  // 初始化输出文件
+  initOutPutFile(config.outPut, config.servicePath)
+  // 解析到的路由
+  const { paths = {} } = await SwaggerParse.dereference(config.url)
+  if (isEmpty(paths)) return
+  Object.keys(paths).forEach((path: string) => {
+    resolvePath(path, paths[path] as any, config.outPut)
+  })
+  appendFileSync(config.outPut, '\n')
 }
 
-export default GenerateApi
+export default generateApi

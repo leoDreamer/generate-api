@@ -141,5 +141,6 @@ fixtures
 # editor
 .vscode
 .idea
-test/apis.js
+test/apis-**.js
 lib
+local-**.json

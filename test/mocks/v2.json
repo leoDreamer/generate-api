@@ -651,12 +651,12 @@
       "type": "object",
       "properties": {
         "id": { "type": "integer", "format": "int64" },
-        "username": { "type": "string" },
-        "firstName": { "type": "string" },
-        "lastName": { "type": "string" },
-        "email": { "type": "string" },
-        "password": { "type": "string" },
-        "phone": { "type": "string" },
+        "username": { "type": "string", "description": "User Name" },
+        "firstName": { "type": "string", "description": "User First Name" },
+        "lastName": { "type": "string", "description": "User Last Name" },
+        "email": { "type": "string", "description": "User email" },
+        "password": { "type": "string", "description": "User password" },
+        "phone": { "type": "string", "description": "User phone" },
         "userStatus": {
           "type": "integer",
           "format": "int32",
