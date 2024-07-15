@@ -1,5 +1,5 @@
 import { appendFileSync } from 'fs'
-import { resolvePath } from './resolve'
+import { resolvePath, resolvePathV3 } from './resolve'
 import SwaggerParse from '@readme/openapi-parser'
 import { isEmpty } from 'lodash'
 import { initOutPutFile } from './utils'
@@ -10,19 +10,19 @@ export interface GenerateApiConfig {
    */
   url: string
   /**
-   * The username for authentication.
+   * The out put js file path
    */
   outPut: string
   /**
-   * The password for authentication.
+   * The request function path with string.
    */
   servicePath: string
   /**
-   * The password for authentication.
+   * The jsDoc for request.
    */
   generateRequestDoc?: boolean
   /**
-   * The password for authentication.
+   * The jsDoc for response.
    */
   generateResponseDoc?: boolean
 }
@@ -31,10 +31,15 @@ async function generateApi(config: GenerateApiConfig) {
   // 初始化输出文件
   initOutPutFile(config.outPut, config.servicePath)
   // 解析到的路由
-  const { paths = {} } = await SwaggerParse.dereference(config.url)
+  const { paths = {}, openapi } = (await SwaggerParse.dereference(config.url)) as any
   if (isEmpty(paths)) return
   Object.keys(paths).forEach((path: string) => {
-    resolvePath(path, paths[path] as any, config.outPut)
+    ;(openapi.charAt(0) === '3' ? resolvePathV3 : resolvePath)(
+      path,
+      paths[path] as any,
+      config.outPut,
+      config.generateRequestDoc,
+    )
   })
   appendFileSync(config.outPut, '\n')
 }

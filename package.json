@@ -1,6 +1,6 @@
 {
   "name": "generate-swagger-api",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Open API toolkits for JS",
   "private": false,
   "main": "lib/index.js",

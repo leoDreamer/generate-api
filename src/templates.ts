@@ -42,7 +42,7 @@ export function ${name}(${requestParamsStr}) {
 export function tmpImportFn(servicePath: string) {
   return `import service from '${servicePath}'\n\n`
 }
-export function tmpRequestDocFn(description: string, requestParams: IResolveRequest, requestDoc = true) {
+export function tmpRequestDocFn(description: string, requestParams: IResolveRequest, requestDoc?: boolean) {
   let doc = `\n/**
  * ${description || ''}`
   if (requestDoc) {

@@ -1,5 +1,5 @@
 import { pick } from 'lodash'
-import { upperCaseFirst } from './utils'
+import { toCamelCase } from './utils'
 import { tmpRequestDocFn, tmpRequestFn } from './templates'
 import { appendFileSync } from 'fs'
 
@@ -124,21 +124,21 @@ export function resolveRequest(parameters: Array<any>) {
         ret.path?.push({
           key: `path.${param.name}`,
           description: param.description,
-          type: param.type,
+          type: param.type || param?.schema?.type,
         })
         break
       case 'query':
         ret.query?.push({
           key: `query.${param.name}`,
           description: param.description,
-          type: param.type,
+          type: param.type || param?.schema?.type,
         })
         break
       case 'formData':
         ret.formData?.push({
           key: `formData.${param.name}`,
           description: param.description,
-          type: param.type,
+          type: param.type || param?.schema?.type,
         })
         break
       default:
@@ -155,11 +155,7 @@ export function resolveRequest(parameters: Array<any>) {
 // 生成函数名字
 export function resolveName(method: string, path: string) {
   // 名字重复处理
-  let name = `${method}${path
-    .split('/')
-    .filter((each) => !!each)
-    .map((each) => upperCaseFirst(each.replace('{', '').replace('}', '')))
-    .join('')}`
+  let name = `${method}${toCamelCase(path)}`
   names.push(name)
   const nameIndex = names.filter((each) => each === name).length - 1
   if (nameIndex > 0) {
@@ -168,8 +164,8 @@ export function resolveName(method: string, path: string) {
   return name
 }
 
-// 生成请求函数并写入文件
-export function resolvePath(path: string, content: Record<string, any>, outPut: string) {
+// v2-生成请求函数并写入文件
+export function resolvePath(path: string, content: Record<string, any>, outPut: string, requestDoc = true) {
   Object.keys(content).forEach((method) => {
     const { parameters = [], summary, description } = content[method]
     // 解析请求参数
@@ -177,7 +173,37 @@ export function resolvePath(path: string, content: Record<string, any>, outPut: 
     // 解析请求名称
     const name = resolveName(method, path)
     // 生成jsdoc文档
-    const docs = tmpRequestDocFn(summary || description, requestParams)
+    const docs = tmpRequestDocFn(summary || description, requestParams, requestDoc)
+    // 生成函数
+    const code = tmpRequestFn(
+      { method, url: path, name },
+      docs,
+      requestParams.path,
+      requestParams.query,
+      requestParams.body,
+      requestParams.formData,
+    )
+    appendFileSync(outPut, code)
+  })
+}
+
+// v2-生成请求函数并写入文件
+export function resolvePathV3(path: string, content: Record<string, any>, outPut: string, requestDoc = true) {
+  Object.keys(content).forEach((method) => {
+    const { parameters = [], requestBody, summary, description } = content[method]
+    if (requestBody) {
+      parameters.push({
+        in: 'body',
+        description: requestBody.description,
+        schema: requestBody.content['application/json']?.schema || {},
+      })
+    }
+    // 解析请求参数
+    const requestParams = resolveRequest(parameters)
+    // 解析请求名称
+    const name = resolveName(method, path)
+    // 生成jsdoc文档
+    const docs = tmpRequestDocFn(summary || description, requestParams, requestDoc)
     // 生成函数
     const code = tmpRequestFn(
       { method, url: path, name },

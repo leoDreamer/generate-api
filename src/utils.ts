@@ -1,8 +1,11 @@
 import { existsSync, rmSync, writeFileSync } from 'fs'
 
-// 大写首字母
-export function upperCaseFirst(str: string) {
-  return `${str.charAt(0).toUpperCase()}${str.slice(1)}`
+// 根据特殊字符分割字符串并转为驼峰命名
+export function toCamelCase(str: string) {
+  return str
+    .replace(/{/g, '')
+    .replace(/}/g, '')
+    .replace(/[-_/]([a-z])/g, (match, p1) => p1.toUpperCase())
 }
 
 // 初始化文件
