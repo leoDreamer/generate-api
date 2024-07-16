@@ -34,7 +34,7 @@ async function generateApi(config: GenerateApiConfig) {
   const { paths = {}, openapi } = (await SwaggerParse.dereference(config.url)) as any
   if (isEmpty(paths)) return
   Object.keys(paths).forEach((path: string) => {
-    ;(openapi.charAt(0) === '3' ? resolvePathV3 : resolvePath)(
+    ;(openapi?.charAt(0) === '3' ? resolvePathV3 : resolvePath)(
       path,
       paths[path] as any,
       config.outPut,
