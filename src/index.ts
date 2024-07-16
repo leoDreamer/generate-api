@@ -28,9 +28,9 @@ export interface GenerateApiConfig {
 }
 
 async function generateApi(config: GenerateApiConfig) {
-  // 初始化输出文件
+  // init output file
   initOutPutFile(config.outPut, config.servicePath)
-  // 解析到的路由
+  // resolve paths from swagger
   const { paths = {}, openapi } = (await SwaggerParse.dereference(config.url)) as any
   if (isEmpty(paths)) return
   Object.keys(paths).forEach((path: string) => {

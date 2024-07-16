@@ -89,7 +89,7 @@ function parseBody(obj: Record<string, any>, parent = 'body') {
   return ret
 }
 
-// 解析请求参数
+// resolve request parameters
 export function resolveRequest(parameters: Array<any>) {
   const ret = {
     body: [],
@@ -152,9 +152,9 @@ export function resolveRequest(parameters: Array<any>) {
   return ret
 }
 
-// 生成函数名字
+// generate function name
 export function resolveName(method: string, path: string) {
-  // 名字重复处理
+  // handle when function name is repeated
   let name = `${method}${toCamelCase(path)}`
   names.push(name)
   const nameIndex = names.filter((each) => each === name).length - 1
@@ -164,7 +164,7 @@ export function resolveName(method: string, path: string) {
   return name
 }
 
-// v2-生成请求函数并写入文件
+// swagger v2 generate request function and write to file
 export function resolvePath(path: string, content: Record<string, any>, outPut: string, requestDoc = true) {
   Object.keys(content).forEach((method) => {
     const { parameters = [], summary, description } = content[method]
@@ -187,7 +187,7 @@ export function resolvePath(path: string, content: Record<string, any>, outPut: 
   })
 }
 
-// v2-生成请求函数并写入文件
+// openapi v3 generate request function and write to file
 export function resolvePathV3(path: string, content: Record<string, any>, outPut: string, requestDoc = true) {
   Object.keys(content).forEach((method) => {
     const { parameters = [], requestBody, summary, description } = content[method]
@@ -198,13 +198,13 @@ export function resolvePathV3(path: string, content: Record<string, any>, outPut
         schema: requestBody.content['application/json']?.schema || {},
       })
     }
-    // 解析请求参数
+    // resolve request parameters
     const requestParams = resolveRequest(parameters)
-    // 解析请求名称
+    // resolve request name
     const name = resolveName(method, path)
-    // 生成jsdoc文档
+    // generate jsdoc
     const docs = tmpRequestDocFn(summary || description, requestParams, requestDoc)
-    // 生成函数
+    // generate function code
     const code = tmpRequestFn(
       { method, url: path, name },
       docs,
