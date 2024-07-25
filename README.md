@@ -1,5 +1,13 @@
 # generate-api
 
+### ⚠️ This project is no longer maintained.
+
+## ⚠️ This project is no longer maintained.
+
+# ⚠️ This project is no longer maintained.
+
+# ⚠️ Move to [@cqfe/generate-api](https://www.npmjs.com/package/@cqfe/generate-api)
+
 ## Description
 
 generate api for axios, based on swagger json.support `Swagger2.0`&`OpenAPI3.0`.
